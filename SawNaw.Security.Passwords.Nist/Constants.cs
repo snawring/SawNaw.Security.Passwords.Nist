@@ -1,8 +1,8 @@
 namespace SawNaw.Security.Passwords.Nist;
 
-public static class Constants
+public struct Constants
 {
-    public static class MinLength
+    public struct MinLength
     {
         public const int ForUserCreated = 8;
         public const int ForMachineCreated = 6;

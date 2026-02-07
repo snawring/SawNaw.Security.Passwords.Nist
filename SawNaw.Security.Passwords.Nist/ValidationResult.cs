@@ -1,8 +1,9 @@
 namespace SawNaw.Security.Passwords.Nist;
 
-public record class ValidationResult(
+public record ValidationResult(
     bool MeetsUserCreatedMinLengthReq,
     bool MeetsMachineCreatedMinLengthReq,
     bool MeetsSingleFactorAuthMinLengthReq,
-    bool MeetsMaxLengthReq
+    bool MeetsMaxLengthReq,
+    bool LooksLikePassPhrase
 );

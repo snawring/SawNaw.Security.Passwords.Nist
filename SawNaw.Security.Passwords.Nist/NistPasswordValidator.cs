@@ -2,20 +2,28 @@
 
 public class NistPasswordValidator
 {
-    private readonly string _password;
+    private const string NullOrWhiteSpaceErrorMessage = "Password cannot be null or whitespace. Prevent this from happening before using this class.";
     
+    private readonly string _password;
+
     public NistPasswordValidator(string password)
     {
-        _password = password;    
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            throw new ArgumentException(NullOrWhiteSpaceErrorMessage, nameof(password));
+        }
+        
+        _password = password;
     }
-
+    
     public ValidationResult Validate()
     {
         return new ValidationResult(
             MeetsMinimumForUserCreated(), 
             MeetsMinimumForMachineCreated(),
             MeetsMinimumForSingleFactorAuth(),
-            MeetsMaxLengthRequirement()
+            MeetsMaxLengthRequirement(),
+            LooksLikePassphrase()
         );
     }
 
@@ -37,5 +45,10 @@ public class NistPasswordValidator
     private bool MeetsMaxLengthRequirement()
     {
         return _password.Length <= Constants.MaxLength;
+    }
+    
+    private bool LooksLikePassphrase()
+    {
+        return _password.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 3;
     }
 }
