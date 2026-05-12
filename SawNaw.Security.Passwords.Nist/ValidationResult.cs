@@ -1,9 +1,10 @@
 namespace SawNaw.Security.Passwords.Nist;
 
 public record ValidationResult(
-    bool MeetsUserCreatedMinLengthReq,
-    bool MeetsMachineCreatedMinLengthReq,
-    bool MeetsSingleFactorAuthMinLengthReq,
-    bool MeetsMaxLengthReq,
+    int Length,
+    bool MeetsUserCreatedMinLengthRequirement,
+    bool MeetsMachineCreatedMinLengthRequirement,
+    bool MeetsSingleFactorAuthMinLengthRequirement,
+    bool MeetsMaxLengthRequirement,
     bool LooksLikePassPhrase
 );

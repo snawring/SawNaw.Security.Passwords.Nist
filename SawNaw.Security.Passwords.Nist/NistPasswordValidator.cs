@@ -19,6 +19,7 @@ public class NistPasswordValidator
     public ValidationResult Validate()
     {
         return new ValidationResult(
+            _password.Length,
             MeetsMinimumForUserCreated(), 
             MeetsMinimumForMachineCreated(),
             MeetsMinimumForSingleFactorAuth(),

@@ -1,12 +1,12 @@
 namespace SawNaw.Security.Passwords.Nist.Core.Tests.NistPasswordValidatorTests;
 
-public class LooksLikePassphraseTests
+public class PassphraseResemblanceTests
 {
     [TestCase("correct horse battery")]
     [TestCase("correct horse battery staple")]
     [TestCase("correct    horse    battery")]
     [TestCase("correct horse   battery      staple")]
-    public void HasTwoOrMoreSpaces_Sets_LooksLikePassphraseFlag(string pw)
+    public void HasTwoOrMoreSpaces_Sets_LooksLikePassphrase(string pw)
     {
         var validator = new NistPasswordValidator(pw);
         var result = validator.Validate();
@@ -16,7 +16,7 @@ public class LooksLikePassphraseTests
     [TestCase("correct horse")]
     [TestCase("correct        horse")]
     [TestCase("correct")]
-    public void HasLessThanTwoSpaces_Sets_LooksLikePassphraseFlag(string pw)
+    public void HasLessThanTwoSpaces_Sets_LooksLikePassphrase(string pw)
     {
         var validator = new NistPasswordValidator(pw);
         var result = validator.Validate();
