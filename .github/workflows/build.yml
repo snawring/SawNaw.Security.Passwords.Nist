@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build and analyze
+    name: Build, run tests and analyze
     runs-on: windows-latest
     steps:
       - name: Set up JDK 17
@@ -42,13 +42,13 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
           dotnet tool update dotnet-coverage --tool-path ${{ runner.temp }}\scanner
 
-      # Updated with the coverage report path flag, compilation, and test collection
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
+        working-directory: ${{ github.workspace }}
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
-          dotnet build --configuration Release
-          ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test --no-build --configuration Release" -f xml -o "coverage.xml"
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+        ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
+        dotnet build SawNaw.Security.Passwords.Nist.sln --configuration Release
+        ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test SawNaw.Security.Passwords.Nist.sln --no-build --configuration Release" -f xml -o "coverage.xml"
+        ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
