@@ -32,7 +32,6 @@ jobs:
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
-      # Modified to install both the scanner AND the coverage tool into your cached folder
       - name: Install SonarQube Cloud scanner and Coverage Tool
         shell: powershell
         run: |
@@ -42,7 +41,6 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
           dotnet tool update dotnet-coverage --tool-path ${{ runner.temp }}\scanner
 
-      # Updated with the coverage report path flag, compilation, and test collection
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
