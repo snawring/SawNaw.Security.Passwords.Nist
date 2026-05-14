@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build, run tests and analyze
+    name: Build and analyze
     runs-on: windows-latest
     steps:
       - name: Set up JDK 17
@@ -18,7 +18,20 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ runner.temp }}\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
       - name: Install SonarQube Cloud scanner and Coverage Tool
         shell: powershell
         run: |
@@ -34,6 +47,6 @@ jobs:
         shell: powershell
         run: |
           ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
-          dotnet build SawNaw.Security.Passwords.Nist.sln --configuration Release
-          ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test SawNaw.Security.Passwords.Nist.sln --no-build --configuration Release" -f xml -o "coverage.xml"
+          dotnet build --configuration Release
+          ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test --no-build --configuration Release" -f xml -o "coverage.xml"
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
