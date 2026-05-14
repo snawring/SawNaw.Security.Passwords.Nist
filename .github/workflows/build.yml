@@ -46,7 +46,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
-        working-directory: ${{ github.workspace }}
         run: |
           ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
           dotnet build SawNaw.Security.Passwords.Nist.sln --configuration Release
