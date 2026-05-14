@@ -5,7 +5,8 @@ public class ExceptionTests
     [Test]
     public void Constructor_ThrowsOnNull()
     {
-        Assert.That(() => new NistPasswordValidator(null), Throws.TypeOf<ArgumentException>());
+        string? nullString = null;
+        Assert.That(() => new NistPasswordValidator(nullString!), Throws.TypeOf<ArgumentException>());
         
     }
     
