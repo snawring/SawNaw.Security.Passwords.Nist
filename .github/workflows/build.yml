@@ -12,51 +12,7 @@ jobs:
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
-        with:name: SonarQube
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    types: [opened, synchronize, reopened]
-jobs:
-  build:
-    name: Build, run tests and analyze
-    runs-on: windows-latest
-    steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
         with:
-          java-version: 17
-          distribution: 'zulu'
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
-        with:
-          fetch-depth: 0
-      - name: Install SonarQube Cloud scanner and Coverage Tool
-        shell: powershell
-        run: |
-          if (-not (Test-Path "${{ runner.temp }}\scanner")) {
-            New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
-          }
-          dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
-          dotnet tool update dotnet-coverage --tool-path ${{ runner.temp }}\scanner
-
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
-        run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin `
-            /k:"snawring_SawNaw.Security.Passwords.Nist" `
-            /o:"sawnaw" `
-            /d:sonar.token="$env:SONAR_TOKEN" `
-            /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" `
-            /d:sonar.analysisCache.enabled=false `
-            /d:sonar.cs.skipUnchanged=false
-          dotnet build SawNaw.Security.Passwords.Nist.sln --configuration Release
-          ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test SawNaw.Security.Passwords.Nist.sln --no-build --configuration Release" -f xml -o "coverage.xml"
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
-
           java-version: 17
           distribution: 'zulu'
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -78,5 +34,7 @@ jobs:
         run: |
           ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
           dotnet build SawNaw.Security.Passwords.Nist.sln --configuration Release
-          ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test SawNaw.Security.Passwords.Nist.sln --no-build --configuration Release" -f xml -o "coverage.xml"
+          ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test SawNaw.Security.Passwords.Nist.sln --no-build --configuration Release" -f xml -o "coverage.xml" `
+          /d:sonar.analysisCache.enabled=false `
+          /d:sonar.cs.skipUnchanged=false
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
