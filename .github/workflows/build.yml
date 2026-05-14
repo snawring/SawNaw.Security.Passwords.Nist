@@ -48,7 +48,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="env:$SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"snawring_SawNaw.Security.Passwords.Nist" /o:"sawnaw" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
           dotnet build --configuration Release
           ${{ runner.temp }}\scanner\dotnet-coverage collect "dotnet test --no-build --configuration Release" -f xml -o "coverage.xml"
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
