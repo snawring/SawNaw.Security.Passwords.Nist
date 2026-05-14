@@ -6,9 +6,9 @@ namespace SawNaw.Security.Passwords.Nist.Domain.Hashing;
 public record class PasswordHasher(string Password)
 {
     // A SHA-1 hash is commonly represented as a 40-character hexadecimal string 
-    private const int LengthOfSha1HashAsAHexadecimalString = 40;
+    private const int LengthOfSha1HashAsHexString = 40;
     
-    public string Hash(int charsToReturn = LengthOfSha1HashAsAHexadecimalString)
+    public string Hash(int charsToReturn = LengthOfSha1HashAsHexString)
     {
         // 1. Calculate length and allocate to the stack
         int byteCount = Encoding.UTF8.GetByteCount(Password);
@@ -39,15 +39,14 @@ public record class PasswordHasher(string Password)
         }
     }
 
-    public string HashUsingStaticApproach()
+    public string HashUsingStaticApproach(int charsToReturn = LengthOfSha1HashAsHexString)
     {
         byte[] sourceBytes = Encoding.UTF8.GetBytes(Password);
 
         byte[] hashBytes = SHA1.HashData(sourceBytes);
 
-        string hex = Convert.ToHexString(hashBytes);
-        string hexLower = Convert.ToHexStringLower(hashBytes); // New in recent .NET versions
-
-        return hexLower;
+        return Convert.ToHexString(hashBytes)
+                      .Substring(0, charsToReturn);
+        
     }
 }
